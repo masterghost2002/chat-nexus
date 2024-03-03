@@ -1,0 +1,15 @@
+echo '🏗️👷 Styling, testing and building your project before committing'
+
+# Check Prettier standards
+pnpm run prettier:check ||
+(
+    echo '😔😔😔 Prettier check failed, please run yarn run prettier, and try commit again.';
+    exit 1;
+)
+
+# Check ESLint Standards
+pnpm run lint ||
+(
+    echo '😤🏀👋😤 ESLint Check Failed. Make the required changes listed above, add changes and try to commit again  😤🏀👋😤'  
+    exit 1;
+)

@@ -1,0 +1,36 @@
+{
+  "name": "chat-nexus",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Rakesh Dhariwal",
+  "main": "index.js",
+  "engines": {
+    "node": ">=16.x",
+    "npm": "please use pnpm",
+    "yarn": "please use pnpm",
+    "pnpm": ">=8.x"
+  },
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node ./dist/src/index.js",
+    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts",
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.33.2",
+    "husky": "^9.0.11",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
