@@ -13,6 +13,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+_chat_nexus_tester
 node_modulesA
 dist
 dist-ssr
