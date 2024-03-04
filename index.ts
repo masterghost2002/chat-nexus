@@ -1,1 +1,2 @@
-export * from './providers/ChatNexus';
+import ChatNexus from './src/providers/ChatNexus';
+export default ChatNexus;
