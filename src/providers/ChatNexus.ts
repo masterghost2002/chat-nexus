@@ -2,6 +2,7 @@ import { createServer, Server as HTTPServer } from 'http';
 import { Server } from 'socket.io';
 import { PersonalMessage } from '../types';
 import Redis from './Redis';
+import type { ChatNexusConfig } from '../types';
 class ChatNexus {
   static keyPrefix = 'NEXUS_CHAT_USERNAME_TO_SOCKETID:';
   static ONE_TO_ONE_CHAT_REDIS_CHANNEL = 'NEXUS_CHAT_ONE_TO_ONE_CHAT';
@@ -36,12 +37,12 @@ class ChatNexus {
       }
     );
   }
-  static chatNexusINIT(
-    origin: string = '*',
-    app: any = undefined,
-    redisPort: number = 6379,
-    redisHost: string = 'localhost'
-  ) {
+  static chatNexusINIT({
+    origin = '*',
+    app = undefined,
+    redisPort = 6379,
+    redisHost = 'localhost'
+  }: ChatNexusConfig) {
     if (!ChatNexus.instance)
       ChatNexus.instance = new ChatNexus(origin, app, redisPort, redisHost);
     return ChatNexus.instance;
