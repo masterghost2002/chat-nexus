@@ -24,14 +24,17 @@ class ChatNexus {
     });
     this.redisClient = Redis.getRedisInstance(redisPort, redisHost);
     this.redisClient.subscribe(ChatNexus.ONE_TO_ONE_CHAT_REDIS_CHANNEL);
-    this.redisClient.on((channel: string, message_from_channel: string) => {
-      if (channel !== ChatNexus.ONE_TO_ONE_CHAT_REDIS_CHANNEL) return;
-      const { senderUsername, reciverUsername, message } =
-        JSON.parse(message_from_channel);
-      this.io
-        .to(reciverUsername)
-        .emit('PRIVATE_CHAT_RESPONSE', { senderUsername, message });
-    });
+    this.redisClient.on(
+      async (channel: string, message_from_channel: string) => {
+        if (channel !== ChatNexus.ONE_TO_ONE_CHAT_REDIS_CHANNEL) return;
+        const { senderUsername, reciverId, message } =
+          JSON.parse(message_from_channel);
+        console.log(senderUsername, reciverId, message);
+        this.io
+          .to(reciverId)
+          .emit('PRIVATE_CHAT_RESPONSE', { senderUsername, message });
+      }
+    );
   }
   static chatNexusINIT(
     origin: string = '*',
@@ -46,9 +49,14 @@ class ChatNexus {
   async listen(port: number, callback: () => void) {
     this.httpServer.listen(port, callback);
   }
-  async privateChat() {
-    this.io.on('connection', (socket) => {
+  privateChat() {
+    this.io.on('connection', async (socket) => {
       const currentUsername = socket.handshake.query.username;
+      const socketId = socket.id;
+      await this.redisClient.setKey(
+        ChatNexus.keyPrefix + currentUsername,
+        socketId
+      );
       if (!currentUsername)
         throw new Error('username is required while setting up socket');
       socket.on('PRIVATE_CHAT', async (data: PersonalMessage) => {
@@ -59,11 +67,11 @@ class ChatNexus {
           );
         const key = ChatNexus.keyPrefix + reciverUsername;
         const reciverId = await this.redisClient.getKey(key);
-        if (reciverId)
-          this.redisClient.publish(
-            ChatNexus.ONE_TO_ONE_CHAT_REDIS_CHANNEL,
-            JSON.stringify({ reciverId, message, senderUsername })
-          );
+        if (!reciverId) return;
+        this.redisClient.publish(
+          ChatNexus.ONE_TO_ONE_CHAT_REDIS_CHANNEL,
+          JSON.stringify({ reciverId, senderUsername, message })
+        );
       });
     });
   }
