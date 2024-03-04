@@ -1,0 +1,15 @@
+/src
+/node_modules
+.env
+.DS_STORE
+
+tsconfig.json
+tsup.config.ts
+.eslintignore
+.eslintrc.json
+.npmrc
+.prettierignore
+.nodemon.json
+.prettierrc
+.husky
+nodemon

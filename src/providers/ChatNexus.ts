@@ -1,6 +1,6 @@
 import { createServer, Server as HTTPServer } from 'http';
 import { Server } from 'socket.io';
-import { PersonalMessage } from '../../types';
+import { PersonalMessage } from '../types';
 import Redis from './Redis';
 class ChatNexus {
   static keyPrefix = 'NEXUS_CHAT_USERNAME_TO_SOCKETID:';
