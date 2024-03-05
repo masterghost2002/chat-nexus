@@ -2,6 +2,9 @@
 
 This module is currently in the beta phase. Use with caution and report any issues or feedback to help improve its stability and functionality.
 
+📝 **Note**
+In the future, I committed to continuous improvement, ensuring that this README file evolves to provide even better clarity and information.
+
 # Chat Nexus Getting Started
 
 ## Available Features
@@ -86,7 +89,7 @@ To recive the event
 })
 ```
 
-## Type of emitData
+## Type of emitData for private chat
 
 ```
 reciverUsername:string,
@@ -94,9 +97,56 @@ message:string,
 senderUsername:string
 ```
 
-## Type of responseData
+## Type of responseData for private chat
 
 ```
 message:string,
 senderUsername:string
+```
+
+## Enable Typing Indicator
+
+```
+chatServer.oneToOneTypingIndicator();
+```
+
+## Type of emitData for typing indicator
+
+```
+reciverUsername:string,
+message:string,
+isTyping:boolean
+```
+
+## Type of responseData for typing indicator
+
+```
+isTyping:boolean,
+senderUsername:string
+```
+
+## Events for socket.io client to listen and emit typing indicator
+
+To emit a message
+
+```
+socket.emit('ONE_TO_ONE_TYPING', emitData);
+```
+
+To recive the event
+
+```
+ socket.on('ONE_TO_ONE_TYPING_RESPONSE', responseData=>{
+})
+```
+
+## Type of config file
+
+```
+  origin?: string;
+  app?: any;
+  redisPort?: number;
+  redisHost?: string;
+  redisOptions?: RedisOptions;
+  redisPath?: string;
 ```

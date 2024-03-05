@@ -13,10 +13,10 @@ class ChatNexus {
   private redisClient: Redis;
   public httpServer: HTTPServer;
   private constructor({
-    origin: string,
+    origin,
     app,
-    redisPort = 6379,
-    redisHost = 'localhost',
+    redisPort,
+    redisHost,
     redisPath,
     redisOptions
   }: ChatNexusConfig) {
@@ -35,6 +35,18 @@ class ChatNexus {
     );
     this.publisherHelper();
   }
+  static chatNexusINIT(config: ChatNexusConfig) {
+    const _config = {
+      origin: config.origin || '*',
+      app: config.app,
+      redisPort: config.redisPort || 6379,
+      redisHost: config.redisHost || 'localhost',
+      redisPath: config.redisPath,
+      redisOptions: config.redisOptions
+    };
+    if (!ChatNexus.instance) ChatNexus.instance = new ChatNexus(_config);
+    return ChatNexus.instance;
+  }
   private subscriptionHandler(channel: string) {
     this.redisClient.subscribe(channel);
   }
@@ -45,7 +57,6 @@ class ChatNexus {
           case ChatNexus.ONE_TO_ONE_CHAT_REDIS_CHANNEL: {
             const { senderUsername, reciverId, message } =
               JSON.parse(message_from_channel);
-            console.log(senderUsername, reciverId, message);
             this.io
               .to(reciverId)
               .emit('PRIVATE_CHAT_RESPONSE', { senderUsername, message });
@@ -56,7 +67,7 @@ class ChatNexus {
               JSON.parse(message_from_channel);
             this.io
               .to(reciverId)
-              .emit('TYPING_RESPONSE', { senderUsername, isTyping });
+              .emit('ONE_TO_ONE_TYPING_RESPONSE', { senderUsername, isTyping });
             break;
           }
           default:
@@ -64,25 +75,6 @@ class ChatNexus {
         }
       }
     );
-  }
-  static chatNexusINIT({
-    origin = '*',
-    app = undefined,
-    redisPort = 6379,
-    redisHost = 'localhost',
-    redisOptions = undefined,
-    redisPath = undefined
-  }: ChatNexusConfig) {
-    if (!ChatNexus.instance)
-      ChatNexus.instance = new ChatNexus({
-        origin,
-        app,
-        redisPort,
-        redisHost,
-        redisPath,
-        redisOptions
-      });
-    return ChatNexus.instance;
   }
   async listen(port: number, callback: () => void) {
     this.httpServer.listen(port, callback);
@@ -129,7 +121,7 @@ class ChatNexus {
       );
       if (!currentUsername)
         throw new Error('username is required while setting up socket');
-      socket.on('TYPING', async (data: OneToOneTypingIndicator) => {
+      socket.on('ONE_TO_ONE_TYPING', async (data: OneToOneTypingIndicator) => {
         const { reciverUsername, isTyping } = data;
         if (!reciverUsername) throw new Error('reciverUsername is required');
         const key = ChatNexus.keyPrefix + reciverUsername;
