@@ -1,9 +1,11 @@
 import type { RedisOptions } from 'ioredis';
-
 export interface PersonalMessage {
-  senderUsername: string;
   reciverUsername: string;
   message: string;
+}
+export interface OneToOneTypingIndicator {
+  reciverUsername: string;
+  isTyping: boolean;
 }
 export type RedisConfig = {
   port?: number;

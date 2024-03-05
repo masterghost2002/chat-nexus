@@ -9,7 +9,8 @@ tsup.config.ts
 .eslintrc.json
 .npmrc
 .prettierignore
-.nodemon.json
 .prettierrc
 .husky
 nodemon
+test
+nodemon.json
