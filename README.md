@@ -60,7 +60,7 @@ import express from 'express'
 import _chatNexus from 'chat-nexus'
 const ChatNexus = _chatNexus.default;
 const app = express();
-const chatServer = ChatNexus.chatNexusINIT('*', app);
+const chatServer = ChatNexus.chatNexusINIT({origin:'*', app:app});
 app.get('/', (req, res)=> res.json('ok'))
 chatServer.listen(5000, ()=>console.log('listening to 5000'))
 ```

@@ -1,17 +1,37 @@
-import ioredis from 'ioredis';
+import ioredis, { RedisOptions } from 'ioredis';
 export default class Redis {
   static instance: Redis;
   private redisClient: ioredis;
   private pub: ioredis;
   private sub: ioredis;
-  private constructor(port: number = 6379, host: string) {
+  private constructor(
+    port: number = 6379,
+    host: string = 'localhost',
+    path?: string,
+    options?: RedisOptions
+  ) {
     if (!host) throw new Error('host address is required');
-    this.redisClient = new ioredis(port, host);
-    this.pub = new ioredis(port, host);
-    this.sub = new ioredis(port, host);
+    if (options) {
+      this.redisClient = new ioredis(options);
+      this.pub = new ioredis(options);
+      this.sub = new ioredis(options);
+    } else if (path) {
+      this.redisClient = new ioredis(path);
+      this.pub = new ioredis(path);
+      this.sub = new ioredis(path);
+    } else {
+      this.redisClient = new ioredis(port, host);
+      this.pub = new ioredis(port, host);
+      this.sub = new ioredis(port, host);
+    }
   }
-  static getRedisInstance(port: number = 6379, host: string) {
-    if (!Redis.instance) Redis.instance = new Redis(port, host);
+  static getRedisInstance(
+    port: number = 6379,
+    host: string = 'localhost',
+    path?: string,
+    options?: RedisOptions
+  ) {
+    if (!Redis.instance) Redis.instance = new Redis(port, host, path, options);
     return Redis.instance;
   }
   async setKey(key: string, value: string) {

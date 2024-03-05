@@ -10,12 +10,14 @@ class ChatNexus {
   private io: Server;
   private redisClient: Redis;
   public httpServer: HTTPServer;
-  private constructor(
+  private constructor({
     origin: string,
-    app: any,
-    redisPort: number = 6379,
-    redisHost: string = 'localhost'
-  ) {
+    app,
+    redisPort = 6379,
+    redisHost = 'localhost',
+    redisPath,
+    redisOptions
+  }: ChatNexusConfig) {
     if (app) this.httpServer = createServer(app);
     else this.httpServer = createServer();
     this.io = new Server(this.httpServer, {
@@ -23,7 +25,12 @@ class ChatNexus {
         origin: origin
       }
     });
-    this.redisClient = Redis.getRedisInstance(redisPort, redisHost);
+    this.redisClient = Redis.getRedisInstance(
+      redisPort,
+      redisHost,
+      redisPath,
+      redisOptions
+    );
     this.redisClient.subscribe(ChatNexus.ONE_TO_ONE_CHAT_REDIS_CHANNEL);
     this.redisClient.on(
       async (channel: string, message_from_channel: string) => {
@@ -41,10 +48,19 @@ class ChatNexus {
     origin = '*',
     app = undefined,
     redisPort = 6379,
-    redisHost = 'localhost'
+    redisHost = 'localhost',
+    redisOptions = undefined,
+    redisPath = undefined
   }: ChatNexusConfig) {
     if (!ChatNexus.instance)
-      ChatNexus.instance = new ChatNexus(origin, app, redisPort, redisHost);
+      ChatNexus.instance = new ChatNexus({
+        origin,
+        app,
+        redisPort,
+        redisHost,
+        redisPath,
+        redisOptions
+      });
     return ChatNexus.instance;
   }
   async listen(port: number, callback: () => void) {
