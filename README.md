@@ -10,10 +10,12 @@ In the future, I committed to continuous improvement, ensuring that this README 
 ## Available Features
 
 - Private Chat
+- Typing Indicator
+- Authentication Support
 
 ## Planned for Beta 2
 
-- Typing Indicator
+- ~~Typing Indicator~~ (✅)
 - Group Chat
 - File Support (Not confirmed)
 
@@ -56,6 +58,17 @@ import _chatNexus from 'chat-nexus'
 const ChatNexus = _chatNexus.default;
 ```
 
+## Type of config file
+
+```
+  origin?: string;
+  app?: any;
+  redisPort?: number;
+  redisHost?: string;
+  redisOptions?: RedisOptions;
+  redisPath?: string;
+```
+
 ## Plugin with express
 
 ```
@@ -63,7 +76,11 @@ import express from 'express'
 import _chatNexus from 'chat-nexus'
 const ChatNexus = _chatNexus.default;
 const app = express();
-const chatServer = ChatNexus.chatNexusINIT({origin:'*', app:app});
+const config = {
+  origin:'*',
+  app:app
+}
+const chatServer = ChatNexus.chatNexusINIT(config);
 app.get('/', (req, res)=> res.json('ok'))
 chatServer.listen(5000, ()=>console.log('listening to 5000'))
 ```
@@ -140,13 +157,23 @@ To recive the event
 })
 ```
 
-## Type of config file
+## Enable Authentication
 
 ```
-  origin?: string;
-  app?: any;
-  redisPort?: number;
-  redisHost?: string;
-  redisOptions?: RedisOptions;
-  redisPath?: string;
+chatServer.enableAuth(callback)
+```
+
+### Callback Type
+
+The callback function takes two arguments
+socket:Socket, next:(err?:ExtendedError | undefined)=>void
+
+### Usage Example
+
+```
+ const accessToken = socket.handshake.headers.cookie?.split('=')[1];
+    const username = socket.handshake.query.username;
+    if(username !== 'a')
+        return next(new Error('Invalid user'));
+    next();
 ```

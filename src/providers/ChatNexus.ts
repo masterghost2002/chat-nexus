@@ -1,6 +1,7 @@
 import { createServer, Server as HTTPServer } from 'http';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { PersonalMessage, OneToOneTypingIndicator } from '../types';
+import { ExtendedError } from 'socket.io/dist/namespace';
 import Redis from './Redis';
 import type { ChatNexusConfig } from '../types';
 class ChatNexus {
@@ -78,6 +79,14 @@ class ChatNexus {
   }
   async listen(port: number, callback: () => void) {
     this.httpServer.listen(port, callback);
+  }
+  enableAuth(
+    cb: (
+      socket: Socket,
+      next: (err?: ExtendedError | undefined) => void
+    ) => void
+  ) {
+    this.io.use(cb);
   }
   privateChat() {
     this.subscriptionHandler(ChatNexus.ONE_TO_ONE_CHAT_REDIS_CHANNEL);
