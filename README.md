@@ -4,6 +4,11 @@ This module is currently in the beta phase. Use with caution and report any issu
 
 📝 **Note**
 In the future, I committed to continuous improvement, ensuring that this README file evolves to provide even better clarity and information.
+**Working With**
+
+- ExpressJS (✅ -> Tested by developer)
+- HONOJS (NOT Tested, require tester)
+- NestJS (NOT Tested, require tester)
 
 # Chat Nexus Getting Started
 
@@ -12,11 +17,12 @@ In the future, I committed to continuous improvement, ensuring that this README 
 - Private Chat
 - Typing Indicator
 - Authentication Support
+- Group Chat
 
 ## Planned for Beta 2
 
 - ~~Typing Indicator~~ (✅)
-- Group Chat
+- ~~Group Chat~~ (✅)
 - File Support (Not confirmed)
 
 ## Introduction
@@ -177,3 +183,33 @@ socket:Socket, next:(err?:ExtendedError | undefined)=>void
         return next(new Error('Invalid user'));
     next();
 ```
+
+## Room Chat
+
+```
+chatServer.roomChat();
+```
+
+### Room Chat Events
+
+#### Emits Events
+
+- CREATE_ROOM
+  - accepts: {roomname}
+- JOIN_ROOM
+  - accepts: {username, roomname}
+- ROOM_MESSAGE
+  - accepts: {roomname, message}
+
+#### Listen Events
+
+- CREATE_ROOM_RESPONSE
+  - returns: {creator, roomId, roomname}
+- JOIN_ROOM_ERROR
+  - returns: 'Room does not exist'
+- JOIN_ROOM_RESPONSE
+  - returns:{roomId, roomname, username}
+- ROOM_MESSAGE_RESPONSE
+  - returns: {senderUsername, message}
+- ROOM_MESSAGE_ERROR
+  - returns: 'Room does not exit'

@@ -7,6 +7,15 @@ export interface OneToOneTypingIndicator {
   reciverUsername: string;
   isTyping: boolean;
 }
+export interface CreateRoom {
+  roomname: string;
+}
+export interface JoinRoom extends CreateRoom {
+  username: string;
+}
+export interface RoomMessage extends CreateRoom {
+  message: string;
+}
 export type RedisConfig = {
   port?: number;
   path?: string;
